@@ -3,4 +3,6 @@ uvicorn[standard]>=0.46.0
 python-dotenv>=1.2.2
 pydantic>=2.13.4
 requests>=2.32.0
+tavily-python>=0.7.24
+trafilatura>=2.0.0
 pytest>=8.0.0

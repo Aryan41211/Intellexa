@@ -1,27 +1,22 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI
 
-from app.retrieval.search import TavilySearch
+from app.api.routes import router
+from app.core.config import settings
+from app.core.logger import configure_logging
 
-app = FastAPI(title="AI Research Agent")
-search_client = TavilySearch()
+configure_logging(settings.LOG_LEVEL)
 
-
-@app.get("/")
-def root() -> dict[str, str]:
-    """Health check endpoint."""
-    return {"message": "AI Research Agent API is running."}
-
-
-@app.get("/search")
-def search(query: str = Query(..., min_length=1)) -> dict[str, list[dict[str, str]]]:
-    """Run a Tavily web search for the provided query."""
-    try:
-        results = search_client.search(query=query)
-        return {"results": results}
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except RuntimeError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description="Compact FastAPI backend for web retrieval and AI research workflows.",
+    contact={"name": "AI Research Agent"},
+    openapi_tags=[
+        {"name": "Health", "description": "Basic service status endpoints."},
+        {"name": "Search", "description": "Tavily-powered web retrieval endpoints."},
+    ],
+)
+app.include_router(router)
 
 
 if __name__ == "__main__":
