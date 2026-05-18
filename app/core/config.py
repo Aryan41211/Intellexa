@@ -42,12 +42,17 @@ class Settings(BaseModel):
             raise ValueError("TAVILY_API_KEY is missing. Add it to your .env file.")
 
 
+def _get_int_env(name: str, default: int) -> int:
+    raw_value = os.getenv(name)
+    return default if raw_value is None else int(raw_value)
+
+
 settings = Settings(
     APP_NAME=os.getenv("APP_NAME", "AI Research Agent"),
     APP_VERSION=os.getenv("APP_VERSION", "0.1.0"),
     LOG_LEVEL=os.getenv("LOG_LEVEL", "INFO"),
     TAVILY_API_KEY=os.getenv("TAVILY_API_KEY"),
-    DEFAULT_SEARCH_RESULTS=os.getenv("DEFAULT_SEARCH_RESULTS", "5"),
+    DEFAULT_SEARCH_RESULTS=_get_int_env("DEFAULT_SEARCH_RESULTS", 5),
     TAVILY_SEARCH_DEPTH=os.getenv("TAVILY_SEARCH_DEPTH", "advanced"),
-    EXTRACTION_TIMEOUT_SECONDS=os.getenv("EXTRACTION_TIMEOUT_SECONDS", "10"),
+    EXTRACTION_TIMEOUT_SECONDS=_get_int_env("EXTRACTION_TIMEOUT_SECONDS", 10),
 )
